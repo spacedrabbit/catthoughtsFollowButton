@@ -41,9 +41,10 @@ class ProfileViewController: UIViewController {
   }
   
   internal func setupViewHierarchy() {
+    self.view.backgroundColor = UIColor.grayColor()
     self.view.addSubview(profileBackgroundView)
     self.profileBackgroundView.addSubview(self.profileTopSectionView)
-    self.profileBackgroundView.addSubview(self.profileBackgroundView)
+    self.profileBackgroundView.addSubview(self.profileBottomSectionView)
   }
   
   
