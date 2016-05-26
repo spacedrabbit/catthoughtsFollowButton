@@ -8,10 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		14C4EFDF1CF7BB6700E4A9DE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C4EFDE1CF7BB6700E4A9DE /* AppDelegate.swift */; };
-		14C4EFE11CF7BB6700E4A9DE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C4EFE01CF7BB6700E4A9DE /* ViewController.swift */; };
-		14C4EFE41CF7BB6700E4A9DE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14C4EFE21CF7BB6700E4A9DE /* Main.storyboard */; };
 		14C4EFE61CF7BB6700E4A9DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14C4EFE51CF7BB6700E4A9DE /* Assets.xcassets */; };
 		14C4EFE91CF7BB6700E4A9DE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14C4EFE71CF7BB6700E4A9DE /* LaunchScreen.storyboard */; };
+		14C4EFF11CF7BE5100E4A9DE /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C4EFF01CF7BE5100E4A9DE /* ProfileViewController.swift */; };
 		FCD5C180494C0B0582D5CFB3 /* Pods_FollowButton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C03AEAF884B5F154073034E /* Pods_FollowButton.framework */; };
 /* End PBXBuildFile section */
 
@@ -20,11 +19,10 @@
 		11A9509FE063966104AE24A6 /* Pods-FollowButton.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FollowButton.release.xcconfig"; path = "Pods/Target Support Files/Pods-FollowButton/Pods-FollowButton.release.xcconfig"; sourceTree = "<group>"; };
 		14C4EFDB1CF7BB6700E4A9DE /* FollowButton.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FollowButton.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14C4EFDE1CF7BB6700E4A9DE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		14C4EFE01CF7BB6700E4A9DE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		14C4EFE31CF7BB6700E4A9DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		14C4EFE51CF7BB6700E4A9DE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		14C4EFE81CF7BB6700E4A9DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		14C4EFEA1CF7BB6700E4A9DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		14C4EFF01CF7BE5100E4A9DE /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		6E971D67B0550E406F360785 /* Pods-FollowButton.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FollowButton.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FollowButton/Pods-FollowButton.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,14 +59,21 @@
 		14C4EFDD1CF7BB6700E4A9DE /* FollowButton */ = {
 			isa = PBXGroup;
 			children = (
+				14C4EFF01CF7BE5100E4A9DE /* ProfileViewController.swift */,
+				14C4EFF21CF7BE6500E4A9DE /* Supporting Files */,
+			);
+			path = FollowButton;
+			sourceTree = "<group>";
+		};
+		14C4EFF21CF7BE6500E4A9DE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
 				14C4EFDE1CF7BB6700E4A9DE /* AppDelegate.swift */,
-				14C4EFE01CF7BB6700E4A9DE /* ViewController.swift */,
-				14C4EFE21CF7BB6700E4A9DE /* Main.storyboard */,
 				14C4EFE51CF7BB6700E4A9DE /* Assets.xcassets */,
 				14C4EFE71CF7BB6700E4A9DE /* LaunchScreen.storyboard */,
 				14C4EFEA1CF7BB6700E4A9DE /* Info.plist */,
 			);
-			path = FollowButton;
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		97E1EC2853E3055D52DC791F /* Pods */ = {
@@ -151,7 +156,6 @@
 			files = (
 				14C4EFE91CF7BB6700E4A9DE /* LaunchScreen.storyboard in Resources */,
 				14C4EFE61CF7BB6700E4A9DE /* Assets.xcassets in Resources */,
-				14C4EFE41CF7BB6700E4A9DE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,7 +214,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				14C4EFE11CF7BB6700E4A9DE /* ViewController.swift in Sources */,
+				14C4EFF11CF7BE5100E4A9DE /* ProfileViewController.swift in Sources */,
 				14C4EFDF1CF7BB6700E4A9DE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -218,14 +222,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		14C4EFE21CF7BB6700E4A9DE /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				14C4EFE31CF7BB6700E4A9DE /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		14C4EFE71CF7BB6700E4A9DE /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
