@@ -11,11 +11,17 @@ import SnapKit
 
 class FollowButton: UIView {
 
+  private enum FollowButtonState {
+    case NotFollowing
+    case Following
+    case Loading
+  }
   
   // MARK: - Variables
   // ------------------------------------------------------------
   private var adjustedWidthConstraints: (left: Constraint?, right: Constraint?)
   private var minButtonWidth: CGFloat?
+  private var currentButtonState: FollowButtonState = .NotFollowing
   
   
   // MARK: - Initialization
@@ -49,8 +55,8 @@ class FollowButton: UIView {
       make.center.equalTo(buttonView).priorityRequired()
       
       // I'll need to save these constraints
-      make.right.equalTo(buttonView).inset(48.0)
-      make.left.equalTo(buttonView).offset(48.0)
+      self.adjustedWidthConstraints.left = make.left.equalTo(buttonView).offset(48.0).constraint
+      self.adjustedWidthConstraints.right = make.right.equalTo(buttonView).inset(48.0).constraint
     }
     
     self.spinnerImageView.snp_makeConstraints { (make) -> Void in
@@ -66,6 +72,63 @@ class FollowButton: UIView {
   }
   
   
+  // MARK: - UI Helpers
+  // ------------------------------------------------------------
+  /** Used to update the UI state of the button and label
+  */
+  private func updateButtonToState(state: FollowButtonState) {
+    switch state {
+    case .NotFollowing:
+      self.buttonLabel.text = "F O L L O W"
+      self.buttonView.backgroundColor = ConceptColors.OffWhite
+      self.buttonLabel.textColor = ConceptColors.DarkText
+      
+    case .Following:
+      self.buttonLabel.text = "F O L L O W I N G"
+      self.buttonView.backgroundColor = ConceptColors.MediumBlue
+      self.buttonLabel.textColor = ConceptColors.OffWhite
+      
+    case .Loading:
+      self.buttonLabel.text = ""
+      self.buttonView.backgroundColor = ConceptColors.OffWhite
+    }
+  }
+  
+  
+  // MARK: - Button Control Actions
+  // ------------------------------------------------------------
+  internal func followButtonTapped(sender: AnyObject?) {
+    
+    switch currentButtonState {
+    case .NotFollowing:
+      self.updateButtonToState(.Loading)
+      
+    case .Loading:
+      self.updateButtonToState(.Following)
+      
+    case .Following:
+      self.updateButtonToState(.NotFollowing)
+      
+    }
+  }
+  
+  internal func followButtonHighlighted(sender: AnyObject?) {
+    if currentButtonState == .NotFollowing {
+      self.buttonLabel.textColor = ConceptColors.MediumBlue
+    } else {
+      self.buttonLabel.textColor = ConceptColors.DarkText
+    }
+  }
+  
+  internal func followButtonReleased(sender: AnyObject?) {
+    if currentButtonState == .Following {
+      self.buttonLabel.textColor = ConceptColors.DarkText
+    } else {
+      self.buttonLabel.textColor = ConceptColors.MediumBlue
+    }
+  }
+
+  
   // MARK: - Lazy Instances
   // ------------------------------------------------------------
   // Note: I like using UIControls over UIView's (or other subclasses, UIButton etc.) for custom behaviors because it gives a
@@ -75,6 +138,10 @@ class FollowButton: UIView {
     control.backgroundColor = UIColor.whiteColor()
     control.layer.cornerRadius = 15.0
     control.clipsToBounds = true
+    
+    control.addTarget(self, action: "followButtonTapped:", forControlEvents: [.TouchUpInside, .TouchUpOutside])
+    control.addTarget(self, action: "followButtonHighlighted:", forControlEvents: [.TouchDown, .TouchDragEnter, .TouchDragInside])
+    control.addTarget(self, action: "followButtonReleased:", forControlEvents: [.TouchCancel, .TouchDragExit, .TouchDragOutside])
     return control
   }()
   
