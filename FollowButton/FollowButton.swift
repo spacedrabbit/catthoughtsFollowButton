@@ -77,28 +77,53 @@ class FollowButton: UIView {
   /** Used to update the UI state of the button and label
   */
   private func updateButtonToState(state: FollowButtonState) {
-    switch state {
-    case .NotFollowing:
-      self.buttonLabel.text = "F O L L O W"
-      self.buttonView.backgroundColor = ConceptColors.OffWhite
-      self.buttonLabel.textColor = ConceptColors.DarkText
-      
-    case .Following:
-      self.buttonLabel.text = "F O L L O W I N G"
-      self.buttonView.backgroundColor = ConceptColors.MediumBlue
-      self.buttonLabel.textColor = ConceptColors.OffWhite
-      
-    case .Loading:
-      self.buttonLabel.text = ""
-      self.buttonView.backgroundColor = ConceptColors.OffWhite
+      switch state {
+      case .NotFollowing:
+        self.buttonLabel.text = "F O L L O W"
+        self.buttonView.backgroundColor = ConceptColors.OffWhite
+        self.buttonLabel.textColor = ConceptColors.DarkText
+        self.currentButtonState = .NotFollowing
+        self.spinnerImageView.alpha = 0.0
+        
+      case .Following:
+        self.buttonLabel.text = "F O L L O W I N G"
+        self.buttonView.backgroundColor = ConceptColors.MediumBlue
+        self.buttonLabel.textColor = ConceptColors.OffWhite
+        self.currentButtonState = .Following
+        self.spinnerImageView.alpha = 0.0
+        
+      case .Loading:
+        self.buttonLabel.text = ""
+        self.buttonView.backgroundColor = ConceptColors.OffWhite
+        self.currentButtonState = .Loading
+        self.spinnerImageView.alpha = 1.0
     }
+  }
+  
+  
+  // MARK: - Animations
+  // ------------------------------------------------------------
+  internal func shrinkButton() {
+    
+  }
+  
+  internal func expandButton() {
+    
+  }
+  
+  internal func animateSpinner() {
+    
+  }
+  
+  internal func stopAnimatingSpinner() {
+    
   }
   
   
   // MARK: - Button Control Actions
   // ------------------------------------------------------------
   internal func followButtonTapped(sender: AnyObject?) {
-    
+    print("tapped follow button")
     switch currentButtonState {
     case .NotFollowing:
       self.updateButtonToState(.Loading)
