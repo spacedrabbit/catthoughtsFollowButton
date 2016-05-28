@@ -21,6 +21,7 @@ class FollowButton: UIView {
   // ------------------------------------------------------------
   private var adjustedWidthConstraints: (left: Constraint?, right: Constraint?)
   private var minButtonWidth: CGFloat?
+  
   private var currentButtonState: FollowButtonState = .NotFollowing
   
   
@@ -36,6 +37,8 @@ class FollowButton: UIView {
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
+  
+  
   
   
   // MARK: - Layout Setup
@@ -69,6 +72,23 @@ class FollowButton: UIView {
     self.addSubview(buttonView)
     self.buttonView.addSubview(buttonLabel)
     self.buttonView.addSubview(spinnerImageView)
+  }
+  
+  override func updateConstraints() {
+    print("update contraints")
+
+    super.updateConstraints()
+  }
+  
+  // layoutSubviews is very useful to update the view's corner radius as it has available the view's 
+  // size and position based on its constraints
+  override func layoutSubviews() {
+    self.updateCornerRadius()
+  }
+  
+  internal func updateCornerRadius() {
+    let currentHeight: CGFloat = self.frame.size.height
+    self.buttonView.layer.cornerRadius = currentHeight/2.0
   }
   
   
@@ -123,7 +143,6 @@ class FollowButton: UIView {
   // MARK: - Button Control Actions
   // ------------------------------------------------------------
   internal func followButtonTapped(sender: AnyObject?) {
-    print("tapped follow button")
     switch currentButtonState {
     case .NotFollowing:
       self.updateButtonToState(.Loading)

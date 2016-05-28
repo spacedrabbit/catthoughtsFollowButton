@@ -35,6 +35,7 @@ class ProfileViewController: UIViewController {
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+
     // You don't need to include self.view.layoutIfNeeded() if you call this draw from here
     // self.drawGradientIn(self.profileTopSectionView)
   }
@@ -69,7 +70,7 @@ class ProfileViewController: UIViewController {
       make.centerX.equalTo(self.profileBottomSectionView)
       
       // I forget exactly when I started doing this, but I've gotten into the habit of 
-      // explicitly setting width and/or height of a view that I don't actually mean to set
+      // explicitly setting width and/or height to (0,0) of a view that I don't actually want to set
       // a specific value for its width/height. This step seems to prevent views from collapsing
       // to (w: 0, h: 0) under certain circumstances. 
       
