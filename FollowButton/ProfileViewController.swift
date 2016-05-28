@@ -23,6 +23,7 @@ class ProfileViewController: UIViewController {
   
   
   // MARK: - Lifecycle -
+  // ------------------------------------------------------------
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -40,13 +41,14 @@ class ProfileViewController: UIViewController {
   
   
   // MARK: - Layout -
+  // ------------------------------------------------------------
   internal func configureConstraints() {
     
     self.profileBackgroundView.snp_makeConstraints { (make) -> Void in
-//      make.top.equalTo(self.view).offset(60.0)
-//      make.left.equalTo(self.view).offset(22.0)
-//      make.right.equalTo(self.view).offset(-22.0)
-//      make.bottom.equalTo(self.view).offset(-60.0)
+      // make.top.equalTo(self.view).offset(60.0)
+      // make.left.equalTo(self.view).offset(22.0)
+      // make.right.equalTo(self.view).offset(-22.0)
+      // make.bottom.equalTo(self.view).offset(-60.0)
 
       // the above is equivalent to just this:
       make.edges.equalTo(self.view).inset(UIEdgeInsetsMake(60.0, 22.0, 60.0, 22.0))
@@ -62,6 +64,22 @@ class ProfileViewController: UIViewController {
       make.top.equalTo(self.profileBackgroundView.snp_centerY).multipliedBy(1.30)
     }
     
+    self.followButton.snp_makeConstraints { (make) -> Void in
+      make.centerY.equalTo(self.profileBottomSectionView.snp_top)
+      make.centerX.equalTo(self.profileBottomSectionView)
+      
+      // I forget exactly when I started doing this, but I've gotten into the habit of 
+      // explicitly setting width and/or height of a view that I don't actually mean to set
+      // a specific value for its width/height. This step seems to prevent views from collapsing
+      // to (w: 0, h: 0) under certain circumstances. 
+      
+      // Why the 990.0 priority? Another habit started by using autolayout with tableview cells.
+      // I forget the details, but there is a high priority width constraint that iOS places on
+      // views constrainted to a UITableViewCell's contentView. And if you try to place another 
+      // high priority constraint on that view's width, it will get broken and ignored by iOS. 
+      // So setting the priority to anything lower than 1000 (required) prevents this. 
+      make.height.width.greaterThanOrEqualTo(0.0).priority(990.0)
+    }
   }
   
   internal func setupViewHierarchy() {
@@ -69,6 +87,7 @@ class ProfileViewController: UIViewController {
     self.view.addSubview(profileBackgroundView)
     self.profileBackgroundView.addSubview(self.profileTopSectionView)
     self.profileBackgroundView.addSubview(self.profileBottomSectionView)
+    self.profileBackgroundView.addSubview(self.followButton)
   }
   
   
@@ -90,6 +109,7 @@ class ProfileViewController: UIViewController {
   
   
   // MARK: - Lazy Instances -
+  // ------------------------------------------------------------
   lazy var profileBackgroundView: UIView = {
     let view: UIView = UIView()
     view.layer.cornerRadius = 12.0
@@ -109,4 +129,5 @@ class ProfileViewController: UIViewController {
     return view
   }()
   
+  lazy var followButton: FollowButton = FollowButton()
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		145C53051CFA1DF300B76647 /* FollowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145C53041CFA1DF300B76647 /* FollowButton.swift */; };
 		14C4EFDF1CF7BB6700E4A9DE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C4EFDE1CF7BB6700E4A9DE /* AppDelegate.swift */; };
 		14C4EFE61CF7BB6700E4A9DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14C4EFE51CF7BB6700E4A9DE /* Assets.xcassets */; };
 		14C4EFE91CF7BB6700E4A9DE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14C4EFE71CF7BB6700E4A9DE /* LaunchScreen.storyboard */; };
@@ -18,6 +19,7 @@
 /* Begin PBXFileReference section */
 		0C03AEAF884B5F154073034E /* Pods_FollowButton.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FollowButton.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		11A9509FE063966104AE24A6 /* Pods-FollowButton.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FollowButton.release.xcconfig"; path = "Pods/Target Support Files/Pods-FollowButton/Pods-FollowButton.release.xcconfig"; sourceTree = "<group>"; };
+		145C53041CFA1DF300B76647 /* FollowButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FollowButton.swift; sourceTree = "<group>"; };
 		14C4EFDB1CF7BB6700E4A9DE /* FollowButton.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FollowButton.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14C4EFDE1CF7BB6700E4A9DE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		14C4EFE51CF7BB6700E4A9DE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 			children = (
 				14C4EFF31CF7C13C00E4A9DE /* ColorPalette.swift */,
 				14C4EFF01CF7BE5100E4A9DE /* ProfileViewController.swift */,
+				145C53041CFA1DF300B76647 /* FollowButton.swift */,
 				14C4EFF21CF7BE6500E4A9DE /* Supporting Files */,
 			);
 			path = FollowButton;
@@ -217,6 +220,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				145C53051CFA1DF300B76647 /* FollowButton.swift in Sources */,
 				14C4EFF11CF7BE5100E4A9DE /* ProfileViewController.swift in Sources */,
 				14C4EFDF1CF7BB6700E4A9DE /* AppDelegate.swift in Sources */,
 				14C4EFF41CF7C13C00E4A9DE /* ColorPalette.swift in Sources */,
