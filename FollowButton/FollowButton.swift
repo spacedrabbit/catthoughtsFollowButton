@@ -21,6 +21,7 @@ class FollowButton: UIView {
   // ------------------------------------------------------------
   private var adjustedWidthConstraints: (left: Constraint?, right: Constraint?)
   private var minButtonWidth: CGFloat?
+  private var checkHeightOnce: dispatch_once_t = 0
   
   private var currentButtonState: FollowButtonState = .NotFollowing
   
@@ -37,8 +38,6 @@ class FollowButton: UIView {
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
-  
-  
   
   
   // MARK: - Layout Setup
@@ -84,6 +83,12 @@ class FollowButton: UIView {
   // size and position based on its constraints
   override func layoutSubviews() {
     self.updateCornerRadius()
+    
+    // I don't know if this is the best solution, but it seems to work out well in this example
+    dispatch_once(&checkHeightOnce) { () -> Void in
+      self.minButtonWidth = self.frame.size.height
+      print("minBtnWid: \(self.minButtonWidth)")
+    }
   }
   
   internal func updateCornerRadius() {
@@ -92,8 +97,11 @@ class FollowButton: UIView {
   }
   
   
-  // MARK: - UI Helpers
+  // MARK: - Helpers -
   // ------------------------------------------------------------
+  
+  
+  // MARK: UI Helpers
   /** Used to update the UI state of the button and label
   */
   private func updateButtonToState(state: FollowButtonState) {
@@ -111,24 +119,65 @@ class FollowButton: UIView {
         self.buttonLabel.textColor = ConceptColors.OffWhite
         self.currentButtonState = .Following
         self.spinnerImageView.alpha = 0.0
+        expandButton()
         
       case .Loading:
-        self.buttonLabel.text = ""
-        self.buttonView.backgroundColor = ConceptColors.OffWhite
+        // Why not set the text to an empty string? Its because our height
+        // constraints are being held by the labels intrinsic content size
+        // In fact, this (the entire animation) works because of the label's size
+        // Without it, I would have to adjust way more constraints
+        self.buttonView.backgroundColor = UIColor.whiteColor()
         self.currentButtonState = .Loading
         self.spinnerImageView.alpha = 1.0
+        shrinkButton()
     }
   }
+  
+  
+  // MARK: Other Helpers
   
   
   // MARK: - Animations
   // ------------------------------------------------------------
   internal func shrinkButton() {
     
+    guard self.minButtonWidth != nil && self.minButtonWidth > 0.0 else { return }
+    self.userInteractionEnabled = false
+   
+    self.adjustedWidthConstraints.left?.deactivate()
+    self.adjustedWidthConstraints.right?.deactivate()
+    self.buttonView.snp_updateConstraints { (make) -> Void in
+      make.width.greaterThanOrEqualTo(self.minButtonWidth!)
+    }
+    self.setNeedsUpdateConstraints()
+    
+    UIView.animateWithDuration(0.45, animations: { () -> Void in
+
+      self.layoutIfNeeded()
+      
+      }) { (complete: Bool) -> Void in
+        if complete {
+          self.userInteractionEnabled = true
+        }
+    }
   }
   
   internal func expandButton() {
+    self.userInteractionEnabled = false
     
+    self.adjustedWidthConstraints.left?.activate()
+    self.adjustedWidthConstraints.right?.activate()
+    self.setNeedsUpdateConstraints()
+    
+    UIView.animateWithDuration(0.25, animations: { () -> Void in
+      
+      self.layoutIfNeeded()
+      
+      }) { (complete: Bool) -> Void in
+        if complete {
+          self.userInteractionEnabled = true
+        }
+    }
   }
   
   internal func animateSpinner() {
