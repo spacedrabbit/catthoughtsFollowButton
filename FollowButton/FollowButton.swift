@@ -111,6 +111,7 @@ class FollowButton: UIView {
         self.buttonView.backgroundColor = ConceptColors.OffWhite
         self.buttonLabel.textColor = ConceptColors.DarkText
         self.currentButtonState = .NotFollowing
+        self.buttonLabel.alpha = 1.0
         self.spinnerImageView.alpha = 0.0
         
       case .Following:
@@ -118,28 +119,39 @@ class FollowButton: UIView {
         self.buttonView.backgroundColor = ConceptColors.MediumBlue
         self.buttonLabel.textColor = ConceptColors.OffWhite
         self.currentButtonState = .Following
+        self.buttonLabel.alpha = 1.0
         self.spinnerImageView.alpha = 0.0
-        expandButton()
+        self.expandButton { complete -> Void in
+          self.userInteractionEnabled = true
+          self.stopAnimatingSpinner()
+        }
         
       case .Loading:
-        // Why not set the text to an empty string? Its because our height
-        // constraints are being held by the labels intrinsic content size
-        // In fact, this (the entire animation) works because of the label's size
-        // Without it, I would have to adjust way more constraints
+        /*  Why not set the text to an empty string? Its because the view's height
+            constraints are being held in place by the label's intrinsic content size.
+            In fact, this (the entire animation) works because of the label's frame size
+            simply existing. Without it, I would have to adjust way more constraints        */
         self.buttonView.backgroundColor = UIColor.whiteColor()
         self.currentButtonState = .Loading
+        self.buttonLabel.alpha = 0.0
         self.spinnerImageView.alpha = 1.0
-        shrinkButton()
+        self.shrinkButton { complete -> Void in
+          self.userInteractionEnabled = true
+          self.animateSpinner()
+        }
     }
   }
   
-  
   // MARK: Other Helpers
+  private func rotationTransform(degrees: CGFloat) -> CATransform3D {
+    let radians: CGFloat = degrees * (CGFloat(M_PI) / 180.0)
+    return CATransform3DMakeRotation(radians, 0.0, 0.0, -1.0)
+  }
   
   
   // MARK: - Animations
   // ------------------------------------------------------------
-  internal func shrinkButton() {
+  internal func shrinkButton(completetion: ((complete: Bool)->Void)? = nil) {
     
     guard self.minButtonWidth != nil && self.minButtonWidth > 0.0 else { return }
     self.userInteractionEnabled = false
@@ -152,17 +164,11 @@ class FollowButton: UIView {
     self.setNeedsUpdateConstraints()
     
     UIView.animateWithDuration(0.45, animations: { () -> Void in
-
       self.layoutIfNeeded()
-      
-      }) { (complete: Bool) -> Void in
-        if complete {
-          self.userInteractionEnabled = true
-        }
-    }
+      }, completion: completetion)
   }
   
-  internal func expandButton() {
+  internal func expandButton(completetion: ((complete: Bool)->Void)? = nil) {
     self.userInteractionEnabled = false
     
     self.adjustedWidthConstraints.left?.activate()
@@ -170,22 +176,48 @@ class FollowButton: UIView {
     self.setNeedsUpdateConstraints()
     
     UIView.animateWithDuration(0.25, animations: { () -> Void in
-      
       self.layoutIfNeeded()
-      
-      }) { (complete: Bool) -> Void in
-        if complete {
-          self.userInteractionEnabled = true
-        }
-    }
+      }, completion: completetion)
   }
   
   internal func animateSpinner() {
     
+    UIView.animateKeyframesWithDuration(1.25, delay: 0.0, options: [.Repeat, .BeginFromCurrentState, .CalculationModePaced], animations: { () -> Void in
+      
+      UIView.addKeyframeWithRelativeStartTime(0.0,
+        relativeDuration: 0.25,
+        animations: { () -> Void in
+          self.spinnerImageView.layer.transform = self.rotationTransform(90.0)
+      })
+      
+      UIView.addKeyframeWithRelativeStartTime(0.25,
+        relativeDuration: 0.25,
+        animations: { () -> Void in
+          self.spinnerImageView.layer.transform = self.rotationTransform(180.0)
+      })
+      
+      UIView.addKeyframeWithRelativeStartTime(0.50,
+        relativeDuration: 0.25,
+        animations: { () -> Void in
+          self.spinnerImageView.layer.transform = self.rotationTransform(270.0)
+      })
+      
+      UIView.addKeyframeWithRelativeStartTime(0.75,
+        relativeDuration: 0.25,
+        animations: { () -> Void in
+          self.spinnerImageView.layer.transform = self.rotationTransform(360.0)
+      })
+      
+      }) { (complete: Bool) -> Void in
+        if complete {
+        
+        }
+    }
+    
   }
   
   internal func stopAnimatingSpinner() {
-    
+    self.spinnerImageView.layer.removeAllAnimations()
   }
   
   
@@ -201,7 +233,6 @@ class FollowButton: UIView {
       
     case .Following:
       self.updateButtonToState(.NotFollowing)
-      
     }
   }
   
