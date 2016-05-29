@@ -10,24 +10,24 @@ import UIKit
 import SnapKit
 
 
-protocol FollowButtonDelegate: class {
+public protocol FollowButtonDelegate: class {
   func didPressFollowButton(currentState: FollowButtonState)
 }
 
-internal enum FollowButtonState {
+public enum FollowButtonState {
   case NotFollowing
   case Following
   case Loading
 }
 
-internal class FollowButton: UIView {
+public class FollowButton: UIView {
   
-  internal struct FollowButtonOptions {
-    internal let labelText: String
-    internal let textColor: UIColor
-    internal let backgroundColor: UIColor
-    internal let showSpinner: Bool
-    internal let showLabel: Bool
+  private struct FollowButtonOptions {
+    private let labelText: String
+    private let textColor: UIColor
+    private let backgroundColor: UIColor
+    private let showSpinner: Bool
+    private let showLabel: Bool
   }
   
   private enum FollowButtonTransition {
@@ -37,7 +37,7 @@ internal class FollowButton: UIView {
   
   // MARK: - Variables
   // ------------------------------------------------------------
-  internal var delegate: FollowButtonDelegate?
+  public var delegate: FollowButtonDelegate?
   
   private var adjustedWidthConstraints: (left: Constraint?, right: Constraint?)
   private var minButtonWidth: CGFloat?
@@ -57,19 +57,19 @@ internal class FollowButton: UIView {
   
   // MARK: - Initialization
   // ------------------------------------------------------------
-  internal convenience init(withState state: FollowButtonState) {
+  public convenience init(withState state: FollowButtonState) {
     self.init(frame: CGRectZero)
     self.updateButtonToState(state)
   }
   
-  override init(frame: CGRect) {
+  public override init(frame: CGRect) {
     super.init(frame: frame)
     
     self.setupViewHierarchy()
     self.configureConstraints()
   }
   
-  required init?(coder aDecoder: NSCoder) {
+  public required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
@@ -115,13 +115,9 @@ internal class FollowButton: UIView {
     self.buttonView.addSubview(spinnerImageView)
   }
   
-  override func updateConstraints() {
-    super.updateConstraints()
-  }
-  
   // layoutSubviews is very useful to update the view's corner radius as it has available the view's 
   // size and position based on its constraints
-  override func layoutSubviews() {
+  public override func layoutSubviews() {
     self.updateCornerRadius()
     
     // I don't know if this is the best solution, but it seems to work out well in this example
