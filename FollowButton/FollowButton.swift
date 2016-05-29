@@ -29,6 +29,7 @@ internal class FollowButton: UIView {
   // ------------------------------------------------------------
   private var adjustedWidthConstraints: (left: Constraint?, right: Constraint?)
   private var minButtonWidth: CGFloat?
+  private var minButtonHeight: CGFloat?
   private var checkHeightOnce: dispatch_once_t = 0
   
   private var currentButtonState: FollowButtonState = .NotFollowing {
@@ -100,6 +101,7 @@ internal class FollowButton: UIView {
     // I don't know if this is the best solution, but it seems to work out well in this example
     dispatch_once(&checkHeightOnce) { () -> Void in
       self.minButtonWidth = self.frame.size.height
+      self.minButtonHeight = self.minButtonWidth
       print("minBtnWid: \(self.minButtonWidth)")
     }
   }
@@ -165,7 +167,7 @@ internal class FollowButton: UIView {
     self.adjustedWidthConstraints.left?.deactivate()
     self.adjustedWidthConstraints.right?.deactivate()
     self.buttonView.snp_updateConstraints { (make) -> Void in
-      make.width.greaterThanOrEqualTo(self.minButtonWidth!)
+      make.width.height.greaterThanOrEqualTo(self.minButtonWidth!)
     }
     self.setNeedsUpdateConstraints()
     
@@ -175,6 +177,8 @@ internal class FollowButton: UIView {
   }
   
   private func expandButton(completetion: ((complete: Bool)->Void)? = nil) {
+    
+    guard self.minButtonWidth != nil && self.minButtonWidth > 0.0 else { return }
     self.userInteractionEnabled = false
     
     self.adjustedWidthConstraints.left?.activate()
@@ -265,8 +269,8 @@ internal class FollowButton: UIView {
   
   // MARK: - Lazy Instances
   // ------------------------------------------------------------
-  // Note: I like using UIControls over UIView's (or other subclasses, UIButton etc.) for custom behaviors because it gives a
-  // little more flexibility for target/actions and doesn't come with any pre-defined action behaviour
+  /* I like using UIControls over UIView's (or other subclasses, UIButton etc.) for custom behaviors because it gives a
+     little more flexibility for target/actions */
   internal lazy var buttonView: UIControl = {
     let control: UIControl = UIControl()
     control.backgroundColor = UIColor.whiteColor()
