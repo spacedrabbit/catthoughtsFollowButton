@@ -30,6 +30,11 @@ internal class FollowButton: UIView {
     internal let showLabel: Bool
   }
   
+  private enum FollowButtonTransition {
+    case FollowingToNotFollowing
+    case NotFollowingToFollowing
+  }
+  
   // MARK: - Variables
   // ------------------------------------------------------------
   internal var delegate: FollowButtonDelegate?
@@ -39,6 +44,7 @@ internal class FollowButton: UIView {
   private var minButtonHeight: CGFloat?
   private var checkHeightOnce: dispatch_once_t = 0
   
+  private var transitionalState: FollowButtonTransition = .NotFollowingToFollowing
   private var currentButtonState: FollowButtonState = .NotFollowing {
     willSet {
       switch newValue {
@@ -51,6 +57,11 @@ internal class FollowButton: UIView {
   
   // MARK: - Initialization
   // ------------------------------------------------------------
+  internal convenience init(withState state: FollowButtonState) {
+    self.init(frame: CGRectZero)
+    self.updateButtonToState(state)
+  }
+  
   override init(frame: CGRect) {
     super.init(frame: frame)
     
@@ -62,13 +73,8 @@ internal class FollowButton: UIView {
     super.init(coder: aDecoder)
   }
   
-  internal func finishAnimating(success: Bool) {
-    if success {
-      self.followButtonTapped(nil)
-    }
-    else {
-      self.updateButtonToState(self.currentButtonState)
-    }
+  internal func finishAnimating(success success: Bool) {
+    self.finishTransition(success)
   }
   
   internal func currentState() -> FollowButtonState {
@@ -137,21 +143,48 @@ internal class FollowButton: UIView {
       switch state {
       case .NotFollowing:
         self.currentButtonState = .NotFollowing
+        self.expandButton { complete -> Void in
+          self.stopAnimatingSpinner()
+        }
         
       case .Following:
         self.currentButtonState = .Following
-
         self.expandButton { complete -> Void in
           self.stopAnimatingSpinner()
         }
         
       case .Loading:
         self.currentButtonState = .Loading
-
         self.shrinkButton { complete -> Void in
           self.animateSpinner()
         }
     }
+  }
+  
+  private func transition(fromState fromState: FollowButtonState, toState: FollowButtonState) {
+    self.updateButtonToState(.Loading)
+    
+    if fromState == .NotFollowing {
+      self.transitionalState = .NotFollowingToFollowing
+    }
+    else if fromState == .Following {
+      self.transitionalState = .FollowingToNotFollowing
+    }
+  }
+  
+  private func finishTransition(success: Bool) {
+    let (successState, transitionState): (Bool, FollowButtonTransition) = (success, self.transitionalState)
+    
+    switch (successState, transitionState) {
+    case (true, .NotFollowingToFollowing),
+         (false, .FollowingToNotFollowing):
+      self.updateButtonToState(.Following)
+      
+    case (true, .FollowingToNotFollowing),
+         (false, .NotFollowingToFollowing):
+      self.updateButtonToState(.NotFollowing)
+    }
+    
   }
   
   private func updateButtonOptions(options: FollowButtonOptions) {
@@ -167,8 +200,6 @@ internal class FollowButton: UIView {
     self.buttonView.layer.cornerRadius = currentHeight/2.0
   }
   
-  
-  // MARK: Other Helper
   private func rotationTransform(degrees: CGFloat) -> CATransform3D {
     let radians: CGFloat = degrees * (CGFloat(M_PI) / 180.0)
     return CATransform3DMakeRotation(radians, 0.0, 0.0, -1.0)
@@ -242,7 +273,7 @@ internal class FollowButton: UIView {
       
       }) { (complete: Bool) -> Void in
         if complete {
-        
+          
         }
     }
     
@@ -259,16 +290,15 @@ internal class FollowButton: UIView {
   internal func followButtonTapped(sender: AnyObject?) {
     switch currentButtonState {
     case .NotFollowing:
-      self.updateButtonToState(.Loading)
+      self.transition(fromState: .NotFollowing, toState: .Following)
+      self.delegate?.didPressFollowButton(.NotFollowing)
+      
+    case .Following:
+      self.transition(fromState: .Following, toState: .NotFollowing)
       self.delegate?.didPressFollowButton(.Following)
       
     case .Loading:
-      self.updateButtonToState(.Following)
-      self.delegate?.didPressFollowButton(.Loading)
-      
-    case .Following:
-      self.updateButtonToState(.NotFollowing)
-      self.delegate?.didPressFollowButton(.NotFollowing)
+      return
     }
   }
   

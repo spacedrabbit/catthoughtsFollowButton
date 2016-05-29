@@ -46,12 +46,6 @@ class ProfileViewController: UIViewController, FollowButtonDelegate {
   internal func configureConstraints() {
     
     self.profileBackgroundView.snp_makeConstraints { (make) -> Void in
-      // make.top.equalTo(self.view).offset(60.0)
-      // make.left.equalTo(self.view).offset(22.0)
-      // make.right.equalTo(self.view).offset(-22.0)
-      // make.bottom.equalTo(self.view).offset(-60.0)
-
-      // the above is equivalent to just this:
       make.edges.equalTo(self.view).inset(UIEdgeInsetsMake(60.0, 22.0, 60.0, 22.0))
     }
     
@@ -105,9 +99,9 @@ class ProfileViewController: UIViewController, FollowButtonDelegate {
     }
     
   }
-  
+
   func fakeNetworkRequest() {
-    self.followButton.finishAnimating(false)
+    self.followButton.finishAnimating(success: true)
   }
   
   
@@ -149,5 +143,5 @@ class ProfileViewController: UIViewController, FollowButtonDelegate {
     return view
   }()
   
-  lazy var followButton: FollowButton = FollowButton()
+  lazy var followButton: FollowButton = FollowButton(withState: .NotFollowing)
 }
