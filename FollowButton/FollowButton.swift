@@ -9,7 +9,15 @@
 import UIKit
 import SnapKit
 
-class FollowButton: UIView {
+internal class FollowButton: UIView {
+  
+  internal struct FollowButtonOptions {
+    internal let labelText: String
+    internal let textColor: UIColor
+    internal let backgroundColor: UIColor
+    internal let showSpinner: Bool
+    internal let showLabel: Bool
+  }
 
   private enum FollowButtonState {
     case NotFollowing
@@ -23,8 +31,15 @@ class FollowButton: UIView {
   private var minButtonWidth: CGFloat?
   private var checkHeightOnce: dispatch_once_t = 0
   
-  private var currentButtonState: FollowButtonState = .NotFollowing
-  
+  private var currentButtonState: FollowButtonState = .NotFollowing {
+    willSet {
+      switch newValue {
+      case .NotFollowing: self.updateButtonOptions(self.notFollowingOptionsConfig)
+      case .Following: self.updateButtonOptions(self.followingOptionsConfig)
+      case .Loading: self.updateButtonOptions(self.loadingOptionsConfig)
+      }
+    }
+  }
   
   // MARK: - Initialization
   // ------------------------------------------------------------
@@ -99,39 +114,30 @@ class FollowButton: UIView {
   private func updateButtonToState(state: FollowButtonState) {
       switch state {
       case .NotFollowing:
-        self.buttonLabel.text = "F O L L O W"
-        self.buttonView.backgroundColor = ConceptColors.OffWhite
-        self.buttonLabel.textColor = ConceptColors.DarkText
         self.currentButtonState = .NotFollowing
-        self.buttonLabel.alpha = 1.0
-        self.spinnerImageView.alpha = 0.0
         
       case .Following:
-        self.buttonLabel.text = "F O L L O W I N G"
-        self.buttonView.backgroundColor = ConceptColors.MediumBlue
-        self.buttonLabel.textColor = ConceptColors.OffWhite
         self.currentButtonState = .Following
-        self.buttonLabel.alpha = 1.0
-        self.spinnerImageView.alpha = 0.0
+
         self.expandButton { complete -> Void in
-          self.userInteractionEnabled = true
           self.stopAnimatingSpinner()
         }
         
       case .Loading:
-        /*  Why not set the text to an empty string? Its because the view's height
-            constraints are being held in place by the label's intrinsic content size.
-            In fact, this (the entire animation) works because of the label's frame size
-            simply existing. Without it, I would have to adjust way more constraints        */
-        self.buttonView.backgroundColor = UIColor.whiteColor()
         self.currentButtonState = .Loading
-        self.buttonLabel.alpha = 0.0
-        self.spinnerImageView.alpha = 1.0
+
         self.shrinkButton { complete -> Void in
-          self.userInteractionEnabled = true
           self.animateSpinner()
         }
     }
+  }
+  
+  private func updateButtonOptions(options: FollowButtonOptions) {
+    self.buttonLabel.text = options.labelText
+    self.buttonLabel.textColor = options.textColor
+    self.buttonView.backgroundColor = options.backgroundColor
+    self.buttonLabel.alpha = options.showLabel ? 1.0 : 0.0
+    self.spinnerImageView.alpha = options.showSpinner ? 1.0 : 0.0
   }
   
   private func updateCornerRadius() {
@@ -140,7 +146,7 @@ class FollowButton: UIView {
   }
   
   
-  // MARK: Other Helpers
+  // MARK: Other Helper
   private func rotationTransform(degrees: CGFloat) -> CATransform3D {
     let radians: CGFloat = degrees * (CGFloat(M_PI) / 180.0)
     return CATransform3DMakeRotation(radians, 0.0, 0.0, -1.0)
@@ -149,6 +155,8 @@ class FollowButton: UIView {
   
   // MARK: - Animations
   // ------------------------------------------------------------
+  
+  // MARK: Button Shrink/Expand
   private func shrinkButton(completetion: ((complete: Bool)->Void)? = nil) {
     
     guard self.minButtonWidth != nil && self.minButtonWidth > 0.0 else { return }
@@ -178,7 +186,9 @@ class FollowButton: UIView {
       }, completion: completetion)
   }
   
+  // MARK: Spinner
   private func animateSpinner() {
+    self.userInteractionEnabled = true
     
     UIView.animateKeyframesWithDuration(1.25, delay: 0.0, options: [.Repeat, .BeginFromCurrentState, .CalculationModePaced], animations: { () -> Void in
       
@@ -215,6 +225,7 @@ class FollowButton: UIView {
   }
   
   private func stopAnimatingSpinner() {
+    self.userInteractionEnabled = true
     self.spinnerImageView.layer.removeAllAnimations()
   }
   
@@ -227,6 +238,7 @@ class FollowButton: UIView {
       self.updateButtonToState(.Loading)
       
     case .Loading:
+//      fallthrough
       self.updateButtonToState(.Following)
       
     case .Following:
@@ -280,5 +292,29 @@ class FollowButton: UIView {
     imageView.contentMode = .ScaleAspectFit
     imageView.alpha = 0.0
     return imageView
+  }()
+  
+  private lazy var notFollowingOptionsConfig: FollowButtonOptions = {
+    let options = FollowButtonOptions(labelText: "F O L L O W",
+      textColor: ConceptColors.DarkText,
+      backgroundColor: ConceptColors.OffWhite,
+      showSpinner: false, showLabel: true)
+    return options
+  }()
+  
+  private lazy var followingOptionsConfig: FollowButtonOptions = {
+    let options = FollowButtonOptions(labelText: "F O L L O W I N G",
+      textColor: ConceptColors.OffWhite,
+      backgroundColor: ConceptColors.MediumBlue,
+      showSpinner: false, showLabel: true)
+    return options
+  }()
+  
+  private lazy var loadingOptionsConfig: FollowButtonOptions = {
+    let options = FollowButtonOptions(labelText: "",
+      textColor: ConceptColors.DarkText,
+      backgroundColor: UIColor.whiteColor(),
+      showSpinner: true, showLabel: false)
+    return options
   }()
 }
