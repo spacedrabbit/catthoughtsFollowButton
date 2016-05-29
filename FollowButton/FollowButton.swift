@@ -74,8 +74,6 @@ class FollowButton: UIView {
   }
   
   override func updateConstraints() {
-    print("update contraints")
-
     super.updateConstraints()
   }
   
@@ -90,16 +88,10 @@ class FollowButton: UIView {
       print("minBtnWid: \(self.minButtonWidth)")
     }
   }
-  
-  internal func updateCornerRadius() {
-    let currentHeight: CGFloat = self.frame.size.height
-    self.buttonView.layer.cornerRadius = currentHeight/2.0
-  }
-  
+
   
   // MARK: - Helpers -
   // ------------------------------------------------------------
-  
   
   // MARK: UI Helpers
   /** Used to update the UI state of the button and label
@@ -142,6 +134,12 @@ class FollowButton: UIView {
     }
   }
   
+  private func updateCornerRadius() {
+    let currentHeight: CGFloat = self.frame.size.height
+    self.buttonView.layer.cornerRadius = currentHeight/2.0
+  }
+  
+  
   // MARK: Other Helpers
   private func rotationTransform(degrees: CGFloat) -> CATransform3D {
     let radians: CGFloat = degrees * (CGFloat(M_PI) / 180.0)
@@ -151,7 +149,7 @@ class FollowButton: UIView {
   
   // MARK: - Animations
   // ------------------------------------------------------------
-  internal func shrinkButton(completetion: ((complete: Bool)->Void)? = nil) {
+  private func shrinkButton(completetion: ((complete: Bool)->Void)? = nil) {
     
     guard self.minButtonWidth != nil && self.minButtonWidth > 0.0 else { return }
     self.userInteractionEnabled = false
@@ -163,12 +161,12 @@ class FollowButton: UIView {
     }
     self.setNeedsUpdateConstraints()
     
-    UIView.animateWithDuration(0.45, animations: { () -> Void in
+    UIView.animateWithDuration(0.35, animations: { () -> Void in
       self.layoutIfNeeded()
       }, completion: completetion)
   }
   
-  internal func expandButton(completetion: ((complete: Bool)->Void)? = nil) {
+  private func expandButton(completetion: ((complete: Bool)->Void)? = nil) {
     self.userInteractionEnabled = false
     
     self.adjustedWidthConstraints.left?.activate()
@@ -180,7 +178,7 @@ class FollowButton: UIView {
       }, completion: completetion)
   }
   
-  internal func animateSpinner() {
+  private func animateSpinner() {
     
     UIView.animateKeyframesWithDuration(1.25, delay: 0.0, options: [.Repeat, .BeginFromCurrentState, .CalculationModePaced], animations: { () -> Void in
       
@@ -216,7 +214,7 @@ class FollowButton: UIView {
     
   }
   
-  internal func stopAnimatingSpinner() {
+  private func stopAnimatingSpinner() {
     self.spinnerImageView.layer.removeAllAnimations()
   }
   
