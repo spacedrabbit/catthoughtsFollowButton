@@ -19,8 +19,8 @@ import SnapKit
  */
 
 
-class ProfileViewController: UIViewController {
-  
+class ProfileViewController: UIViewController, FollowButtonDelegate {
+  private let runloop: NSRunLoop = NSRunLoop.currentRunLoop()
   
   // MARK: - Lifecycle -
   // ------------------------------------------------------------
@@ -85,10 +85,29 @@ class ProfileViewController: UIViewController {
   
   internal func setupViewHierarchy() {
     self.view.backgroundColor = UIColor.grayColor()
+    self.followButton.delegate = self
+    
     self.view.addSubview(profileBackgroundView)
     self.profileBackgroundView.addSubview(self.profileTopSectionView)
     self.profileBackgroundView.addSubview(self.profileBottomSectionView)
     self.profileBackgroundView.addSubview(self.followButton)
+  }
+  
+  
+  // MARK: - FollowButtonDelegate
+  func didPressFollowButton(currentState: FollowButtonState) {
+  
+    if currentState == .Following || currentState == .NotFollowing {
+      let threeSecondsFromNow: NSDate = NSDate(timeInterval: 3.0, sinceDate: NSDate())
+      let timer: NSTimer = NSTimer(fireDate: threeSecondsFromNow, interval: 0.0, target: self, selector: "fakeNetworkRequest", userInfo: nil, repeats: false)
+      
+      runloop.addTimer(timer, forMode: NSDefaultRunLoopMode)
+    }
+    
+  }
+  
+  func fakeNetworkRequest() {
+    self.followButton.finishAnimating(false)
   }
   
   

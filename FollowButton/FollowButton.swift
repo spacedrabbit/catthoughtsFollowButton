@@ -9,6 +9,17 @@
 import UIKit
 import SnapKit
 
+
+protocol FollowButtonDelegate: class {
+  func didPressFollowButton(currentState: FollowButtonState)
+}
+
+internal enum FollowButtonState {
+  case NotFollowing
+  case Following
+  case Loading
+}
+
 internal class FollowButton: UIView {
   
   internal struct FollowButtonOptions {
@@ -18,15 +29,11 @@ internal class FollowButton: UIView {
     internal let showSpinner: Bool
     internal let showLabel: Bool
   }
-
-  private enum FollowButtonState {
-    case NotFollowing
-    case Following
-    case Loading
-  }
   
   // MARK: - Variables
   // ------------------------------------------------------------
+  internal var delegate: FollowButtonDelegate?
+  
   private var adjustedWidthConstraints: (left: Constraint?, right: Constraint?)
   private var minButtonWidth: CGFloat?
   private var minButtonHeight: CGFloat?
@@ -53,6 +60,19 @@ internal class FollowButton: UIView {
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
+  }
+  
+  internal func finishAnimating(success: Bool) {
+    if success {
+      self.followButtonTapped(nil)
+    }
+    else {
+      self.updateButtonToState(self.currentButtonState)
+    }
+  }
+  
+  internal func currentState() -> FollowButtonState {
+    return self.currentButtonState
   }
   
   
@@ -240,13 +260,15 @@ internal class FollowButton: UIView {
     switch currentButtonState {
     case .NotFollowing:
       self.updateButtonToState(.Loading)
+      self.delegate?.didPressFollowButton(.Following)
       
     case .Loading:
-//      fallthrough
       self.updateButtonToState(.Following)
+      self.delegate?.didPressFollowButton(.Loading)
       
     case .Following:
       self.updateButtonToState(.NotFollowing)
+      self.delegate?.didPressFollowButton(.NotFollowing)
     }
   }
   
@@ -271,7 +293,7 @@ internal class FollowButton: UIView {
   // ------------------------------------------------------------
   /* I like using UIControls over UIView's (or other subclasses, UIButton etc.) for custom behaviors because it gives a
      little more flexibility for target/actions */
-  internal lazy var buttonView: UIControl = {
+  private lazy var buttonView: UIControl = {
     let control: UIControl = UIControl()
     control.backgroundColor = UIColor.whiteColor()
     control.layer.cornerRadius = 15.0
@@ -283,7 +305,7 @@ internal class FollowButton: UIView {
     return control
   }()
   
-  internal lazy var buttonLabel: UILabel = {
+  private lazy var buttonLabel: UILabel = {
     var label: UILabel = UILabel()
     label.textColor = ConceptColors.DarkText
     label.font = UIFont.systemFontOfSize(16.0, weight: UIFontWeightMedium)
@@ -291,7 +313,7 @@ internal class FollowButton: UIView {
     return label
   }()
   
-  internal lazy var spinnerImageView: UIImageView = {
+  private lazy var spinnerImageView: UIImageView = {
     let imageView: UIImageView = UIImageView(image: UIImage(named: "squareSpinner"))
     imageView.contentMode = .ScaleAspectFit
     imageView.alpha = 0.0
