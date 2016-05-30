@@ -26,6 +26,17 @@ public enum FollowButtonState {
   case Loading
 }
 
+public struct FollowButtonColors {
+  static let LightBlue: UIColor = UIColor(colorLiteralRed: 130.0/255.0, green: 222.0/255.0, blue: 255.0/255.0, alpha: 1.0)
+  static let MediumBlue: UIColor = UIColor(colorLiteralRed: 113.0/255.0, green: 156.0/255.0, blue: 255.0/255.0, alpha: 1.0)
+  static let OffWhite: UIColor = UIColor(colorLiteralRed: 245.0/255.0, green: 245.0/255.0, blue: 245.0/255.0, alpha: 1.0)
+  static let DarkText: UIColor = UIColor(colorLiteralRed: 100.0/255.0, green: 100.0/255.0, blue: 150.0/255.0, alpha: 1.0)
+}
+
+/**
+ - todo: 
+   - Allow for custom FollowButtonOptions to be set
+*/
 public class FollowButton: UIView {
   
   // Parameter Struct
@@ -331,17 +342,17 @@ public class FollowButton: UIView {
   
   internal func followButtonHighlighted(sender: AnyObject?) {
     if currentButtonState == .NotFollowing {
-      self.buttonLabel.textColor = ConceptColors.MediumBlue
+      self.buttonLabel.textColor = FollowButtonColors.MediumBlue
     } else {
-      self.buttonLabel.textColor = ConceptColors.DarkText
+      self.buttonLabel.textColor = FollowButtonColors.DarkText
     }
   }
   
   internal func followButtonReleased(sender: AnyObject?) {
     if currentButtonState == .Following {
-      self.buttonLabel.textColor = ConceptColors.DarkText
+      self.buttonLabel.textColor = FollowButtonColors.DarkText
     } else {
-      self.buttonLabel.textColor = ConceptColors.MediumBlue
+      self.buttonLabel.textColor = FollowButtonColors.MediumBlue
     }
   }
 
@@ -362,7 +373,7 @@ public class FollowButton: UIView {
   
   private lazy var buttonLabel: UILabel = {
     var label: UILabel = UILabel()
-    label.textColor = ConceptColors.DarkText
+    label.textColor = FollowButtonColors.DarkText
     label.font = UIFont.systemFontOfSize(16.0, weight: UIFontWeightMedium)
     label.text = "F O L L O W"
     return label
@@ -377,23 +388,23 @@ public class FollowButton: UIView {
   
   private lazy var notFollowingOptions: FollowButtonOptions = {
     let options = FollowButtonOptions(labelText: "F O L L O W",
-      labelTextColor: ConceptColors.DarkText,
-      labelBackgroundColor: ConceptColors.OffWhite,
+      labelTextColor: FollowButtonColors.DarkText,
+      labelBackgroundColor: FollowButtonColors.OffWhite,
       showSpinner: false, showLabel: true)
     return options
   }()
   
   private lazy var followingOptions: FollowButtonOptions = {
     let options = FollowButtonOptions(labelText: "F O L L O W I N G",
-      labelTextColor: ConceptColors.OffWhite,
-      labelBackgroundColor: ConceptColors.MediumBlue,
+      labelTextColor: FollowButtonColors.OffWhite,
+      labelBackgroundColor: FollowButtonColors.MediumBlue,
       showSpinner: false, showLabel: true)
     return options
   }()
   
   private lazy var loadingOptions: FollowButtonOptions = {
     let options = FollowButtonOptions(labelText: "",
-      labelTextColor: ConceptColors.DarkText,
+      labelTextColor: FollowButtonColors.DarkText,
       labelBackgroundColor: UIColor.whiteColor(),
       showSpinner: true, showLabel: false)
     return options

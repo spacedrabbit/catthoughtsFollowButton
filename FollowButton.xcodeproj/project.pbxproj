@@ -12,7 +12,6 @@
 		14C4EFE61CF7BB6700E4A9DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14C4EFE51CF7BB6700E4A9DE /* Assets.xcassets */; };
 		14C4EFE91CF7BB6700E4A9DE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14C4EFE71CF7BB6700E4A9DE /* LaunchScreen.storyboard */; };
 		14C4EFF11CF7BE5100E4A9DE /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C4EFF01CF7BE5100E4A9DE /* ProfileViewController.swift */; };
-		14C4EFF41CF7C13C00E4A9DE /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C4EFF31CF7C13C00E4A9DE /* ColorPalette.swift */; };
 		FCD5C180494C0B0582D5CFB3 /* Pods_FollowButton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C03AEAF884B5F154073034E /* Pods_FollowButton.framework */; };
 /* End PBXBuildFile section */
 
@@ -26,7 +25,6 @@
 		14C4EFE81CF7BB6700E4A9DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		14C4EFEA1CF7BB6700E4A9DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14C4EFF01CF7BE5100E4A9DE /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		14C4EFF31CF7C13C00E4A9DE /* ColorPalette.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
 		6E971D67B0550E406F360785 /* Pods-FollowButton.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FollowButton.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FollowButton/Pods-FollowButton.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -63,7 +61,6 @@
 		14C4EFDD1CF7BB6700E4A9DE /* FollowButton */ = {
 			isa = PBXGroup;
 			children = (
-				14C4EFF31CF7C13C00E4A9DE /* ColorPalette.swift */,
 				14C4EFF01CF7BE5100E4A9DE /* ProfileViewController.swift */,
 				145C53041CFA1DF300B76647 /* FollowButton.swift */,
 				14C4EFF21CF7BE6500E4A9DE /* Supporting Files */,
@@ -223,7 +220,6 @@
 				145C53051CFA1DF300B76647 /* FollowButton.swift in Sources */,
 				14C4EFF11CF7BE5100E4A9DE /* ProfileViewController.swift in Sources */,
 				14C4EFDF1CF7BB6700E4A9DE /* AppDelegate.swift in Sources */,
-				14C4EFF41CF7C13C00E4A9DE /* ColorPalette.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

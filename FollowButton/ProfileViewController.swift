@@ -96,7 +96,7 @@ class ProfileViewController: UIViewController, FollowButtonDelegate {
     
     let gradientLayer: CAGradientLayer = CAGradientLayer()
     gradientLayer.frame = view.bounds
-    gradientLayer.colors = [ConceptColors.LightBlue.CGColor, ConceptColors.MediumBlue.CGColor]
+    gradientLayer.colors = [FollowButtonColors.LightBlue.CGColor, FollowButtonColors.MediumBlue.CGColor]
     gradientLayer.locations = [0.0, 1.0] // even transition from light blue to medium blue
     gradientLayer.startPoint = CGPointMake(0.0, 0.0) // top-left corner
     gradientLayer.endPoint = CGPointMake(1.0, 1.0) // bottom-right corner
@@ -116,13 +116,13 @@ class ProfileViewController: UIViewController, FollowButtonDelegate {
   
   lazy var profileTopSectionView: UIView = {
     let view: UIView = UIView()
-    view.backgroundColor = ConceptColors.LightBlue
+    view.backgroundColor = FollowButtonColors.LightBlue
     return view
   }()
   
   lazy var profileBottomSectionView: UIView = {
     let view: UIView = UIView()
-    view.backgroundColor = ConceptColors.OffWhite
+    view.backgroundColor = FollowButtonColors.OffWhite
     return view
   }()
   
