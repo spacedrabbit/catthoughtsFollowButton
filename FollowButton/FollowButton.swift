@@ -9,11 +9,17 @@
 import UIKit
 import SnapKit
 
-
+/**
+  - parameter currentState: The button's current state when pressed. Classes that conform to this protocal
+    can check for `.Following` and `.NotFollowing`
+*/
 public protocol FollowButtonDelegate: class {
   func didPressFollowButton(currentState: FollowButtonState)
 }
 
+/**
+ - note: `.Loading` state isn't used outside of this class. It is not meant to be checked.
+*/
 public enum FollowButtonState {
   case NotFollowing
   case Following
@@ -22,10 +28,11 @@ public enum FollowButtonState {
 
 public class FollowButton: UIView {
   
+  // Parameter Struct
   private struct FollowButtonOptions {
     private let labelText: String
-    private let textColor: UIColor
-    private let backgroundColor: UIColor
+    private let labelTextColor: UIColor
+    private let labelBackgroundColor: UIColor
     private let showSpinner: Bool
     private let showLabel: Bool
   }
@@ -39,26 +46,34 @@ public class FollowButton: UIView {
   // ------------------------------------------------------------
   public var delegate: FollowButtonDelegate?
   
-  private var adjustedWidthConstraints: (left: Constraint?, right: Constraint?)
   private var minButtonWidth: CGFloat?
   private var minButtonHeight: CGFloat?
   private var checkHeightOnce: dispatch_once_t = 0
+  private var adjustedWidthConstraints: (left: Constraint?, right: Constraint?)
   
   private var transitionalState: FollowButtonTransition = .NotFollowingToFollowing
   private var currentButtonState: FollowButtonState = .NotFollowing {
     willSet {
       switch newValue {
-      case .NotFollowing: self.updateButtonOptions(self.notFollowingOptionsConfig)
-      case .Following: self.updateButtonOptions(self.followingOptionsConfig)
-      case .Loading: self.updateButtonOptions(self.loadingOptionsConfig)
+      case .NotFollowing: self.updateButtonOptions(self.notFollowingOptions)
+      case .Following: self.updateButtonOptions(self.followingOptions)
+      case .Loading: self.updateButtonOptions(self.loadingOptions)
       }
     }
   }
   
   // MARK: - Initialization
   // ------------------------------------------------------------
+  /**
+  Instantiate with a specified `FollowButtonState`
+  - parameter state: The state to initialize the button in.
+  - note: Do not initialize in the `.Loading` state. If `.Loading` is passed as the paramter, an instance
+    of `FollowButton` will be returned in the `.NotFollowing` state
+  */
   public convenience init(withState state: FollowButtonState) {
     self.init(frame: CGRectZero)
+    
+    guard state != .Loading else { return }
     self.updateButtonToState(state)
   }
   
@@ -73,10 +88,20 @@ public class FollowButton: UIView {
     super.init(coder: aDecoder)
   }
   
+  /** 
+   Use this function to finish the button's loading state in either a success state, or failure state.
+   - parameter success: 
+     - `true` If the button should finish its transition to a new state
+     - `false` If the button should return to it's original state
+   - note: In a scenario where the button is pressed and going from a `.NotFollowing` -> `.Following`, a value of `true`
+      will finish the loading animation and finish the transition to `.Following`. A value of `false` will finish the 
+      loading animation and animate back to it's original state, in this case `.NotFollowing`
+  */
   internal func finishAnimating(success success: Bool) {
     self.finishTransition(success)
   }
-  
+
+  /// - returns: The button's current `FollowButtonState`
   internal func currentState() -> FollowButtonState {
     return self.currentButtonState
   }
@@ -114,17 +139,14 @@ public class FollowButton: UIView {
     self.buttonView.addSubview(buttonLabel)
     self.buttonView.addSubview(spinnerImageView)
   }
-  
-  // layoutSubviews is very useful to update the view's corner radius as it has available the view's 
-  // size and position based on its constraints
+
   public override func layoutSubviews() {
     self.updateCornerRadius()
     
-    // I don't know if this is the best solution, but it seems to work out well in this example
+    // Get the button's height once, once we can get it's size from it's constraints
     dispatch_once(&checkHeightOnce) { () -> Void in
       self.minButtonWidth = self.frame.size.height
       self.minButtonHeight = self.minButtonWidth
-      print("minBtnWid: \(self.minButtonWidth)")
     }
   }
 
@@ -133,8 +155,7 @@ public class FollowButton: UIView {
   // ------------------------------------------------------------
   
   // MARK: UI Helpers
-  /** Used to update the UI state of the button and label
-  */
+  /// Used to update the UI state of the button and label.
   private func updateButtonToState(state: FollowButtonState) {
       switch state {
       case .NotFollowing:
@@ -157,6 +178,12 @@ public class FollowButton: UIView {
     }
   }
   
+  /** 
+   Starts the button animation and tracks the transition states.
+    - parameters: 
+      - fromState: Button's original state before being pressed
+      - toState: Button's final state after being pressed
+  */
   private func transition(fromState fromState: FollowButtonState, toState: FollowButtonState) {
     self.updateButtonToState(.Loading)
     
@@ -168,6 +195,12 @@ public class FollowButton: UIView {
     }
   }
   
+  /** 
+   Finishes the current animations and updates the button to a new state
+   - parameter success: On `true`, the button moves from it's original `fromState` to its new `toState`. On 'false'
+   the button returns to it's original `fromState` 
+   - seealso: `transition(fromState:toState:)`
+   */
   private func finishTransition(success: Bool) {
     let (successState, transitionState): (Bool, FollowButtonTransition) = (success, self.transitionalState)
     
@@ -185,8 +218,8 @@ public class FollowButton: UIView {
   
   private func updateButtonOptions(options: FollowButtonOptions) {
     self.buttonLabel.text = options.labelText
-    self.buttonLabel.textColor = options.textColor
-    self.buttonView.backgroundColor = options.backgroundColor
+    self.buttonLabel.textColor = options.labelTextColor
+    self.buttonView.backgroundColor = options.labelBackgroundColor
     self.buttonLabel.alpha = options.showLabel ? 1.0 : 0.0
     self.spinnerImageView.alpha = options.showSpinner ? 1.0 : 0.0
   }
@@ -209,7 +242,6 @@ public class FollowButton: UIView {
   private func shrinkButton(completetion: ((complete: Bool)->Void)? = nil) {
     
     guard self.minButtonWidth != nil && self.minButtonWidth > 0.0 else { return }
-    self.userInteractionEnabled = false
    
     self.adjustedWidthConstraints.left?.deactivate()
     self.adjustedWidthConstraints.right?.deactivate()
@@ -226,7 +258,6 @@ public class FollowButton: UIView {
   private func expandButton(completetion: ((complete: Bool)->Void)? = nil) {
     
     guard self.minButtonWidth != nil && self.minButtonWidth > 0.0 else { return }
-    self.userInteractionEnabled = false
     
     self.adjustedWidthConstraints.left?.activate()
     self.adjustedWidthConstraints.right?.activate()
@@ -239,7 +270,7 @@ public class FollowButton: UIView {
   
   // MARK: Spinner
   private func animateSpinner() {
-    self.userInteractionEnabled = true
+    self.userInteractionEnabled = false
     
     UIView.animateKeyframesWithDuration(1.25, delay: 0.0, options: [.Repeat, .BeginFromCurrentState, .CalculationModePaced], animations: { () -> Void in
       
@@ -317,8 +348,6 @@ public class FollowButton: UIView {
   
   // MARK: - Lazy Instances
   // ------------------------------------------------------------
-  /* I like using UIControls over UIView's (or other subclasses, UIButton etc.) for custom behaviors because it gives a
-     little more flexibility for target/actions */
   private lazy var buttonView: UIControl = {
     let control: UIControl = UIControl()
     control.backgroundColor = UIColor.whiteColor()
@@ -346,26 +375,26 @@ public class FollowButton: UIView {
     return imageView
   }()
   
-  private lazy var notFollowingOptionsConfig: FollowButtonOptions = {
+  private lazy var notFollowingOptions: FollowButtonOptions = {
     let options = FollowButtonOptions(labelText: "F O L L O W",
-      textColor: ConceptColors.DarkText,
-      backgroundColor: ConceptColors.OffWhite,
+      labelTextColor: ConceptColors.DarkText,
+      labelBackgroundColor: ConceptColors.OffWhite,
       showSpinner: false, showLabel: true)
     return options
   }()
   
-  private lazy var followingOptionsConfig: FollowButtonOptions = {
+  private lazy var followingOptions: FollowButtonOptions = {
     let options = FollowButtonOptions(labelText: "F O L L O W I N G",
-      textColor: ConceptColors.OffWhite,
-      backgroundColor: ConceptColors.MediumBlue,
+      labelTextColor: ConceptColors.OffWhite,
+      labelBackgroundColor: ConceptColors.MediumBlue,
       showSpinner: false, showLabel: true)
     return options
   }()
   
-  private lazy var loadingOptionsConfig: FollowButtonOptions = {
+  private lazy var loadingOptions: FollowButtonOptions = {
     let options = FollowButtonOptions(labelText: "",
-      textColor: ConceptColors.DarkText,
-      backgroundColor: UIColor.whiteColor(),
+      labelTextColor: ConceptColors.DarkText,
+      labelBackgroundColor: UIColor.whiteColor(),
       showSpinner: true, showLabel: false)
     return options
   }()
