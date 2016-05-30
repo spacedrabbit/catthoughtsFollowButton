@@ -1,8 +1,8 @@
 //
-//  ProfileViewController.swift
+//  FollowButton.swift
 //  FollowButton
 //
-//  Created by Louis Tur on 5/26/16.
+//  Created by Louis Tur on 5/28/16.
 //  Copyright © 2016 cat.thoughts. All rights reserved.
 //
 
@@ -12,15 +12,16 @@ import SnapKit
 /**
  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  
- Design Idea Found @ http://www.ios.uplabs.com/posts/profile-page-interaction-and-animation
- Designer: Malik, @iOfficialBlack (http://www.ios.uplabs.com/iOfficialBlack)
+ Thanks for looking! Check me out on Twitter and >catthoughts
+ - author: Louis Tur [@louistur](https://twitter.com/louistur) / [catthoughts](http://catthoughts.ghost.io/)
+ 
+ Design found @[Uplabs](http://www.ios.uplabs.com/posts/profile-page-interaction-and-animation)
+ Designer: Malik, [@iOfficialBlack](https://twitter.com/iOfficialBlack) / [@Uplabs](http://www.ios.uplabs.com/iOfficialBlack)
  
  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  */
-
-
 class ProfileViewController: UIViewController, FollowButtonDelegate {
-  private let runloop: NSRunLoop = NSRunLoop.currentRunLoop()
+  
   
   // MARK: - Lifecycle -
   // ------------------------------------------------------------
@@ -33,13 +34,6 @@ class ProfileViewController: UIViewController, FollowButtonDelegate {
     self.drawGradientIn(self.profileTopSectionView)
   }
   
-  override func viewDidAppear(animated: Bool) {
-    super.viewDidAppear(animated)
-
-    // You don't need to include self.view.layoutIfNeeded() if you call this draw from here
-    // self.drawGradientIn(self.profileTopSectionView)
-  }
-  
   
   // MARK: - Layout -
   // ------------------------------------------------------------
@@ -50,7 +44,7 @@ class ProfileViewController: UIViewController, FollowButtonDelegate {
     }
     
     self.profileTopSectionView.snp_makeConstraints { (make) -> Void in
-      make.top.left.right.equalTo(self.profileBackgroundView) // really get some savings here
+      make.top.left.right.equalTo(self.profileBackgroundView)
       make.bottom.equalTo(self.profileBottomSectionView.snp_top)
     }
     
@@ -62,17 +56,6 @@ class ProfileViewController: UIViewController, FollowButtonDelegate {
     self.followButton.snp_makeConstraints { (make) -> Void in
       make.centerY.equalTo(self.profileBottomSectionView.snp_top)
       make.centerX.equalTo(self.profileBottomSectionView)
-      
-      // I forget exactly when I started doing this, but I've gotten into the habit of 
-      // explicitly setting width and/or height to (0,0) of a view that I don't actually want to set
-      // a specific value for its width/height. This step seems to prevent views from collapsing
-      // to (w: 0, h: 0) under certain circumstances. 
-      
-      // Why the 990.0 priority? Another habit started by using autolayout with tableview cells.
-      // I forget the details, but there is a high priority width constraint that iOS places on
-      // views constrainted to a UITableViewCell's contentView. And if you try to place another 
-      // high priority constraint on that view's width, it will get broken and ignored by iOS. 
-      // So setting the priority to anything lower than 1000 (required) prevents this. 
       make.height.width.greaterThanOrEqualTo(0.0).priority(990.0)
     }
   }
@@ -93,14 +76,14 @@ class ProfileViewController: UIViewController, FollowButtonDelegate {
   
     if currentState == .Following || currentState == .NotFollowing {
       let threeSecondsFromNow: NSDate = NSDate(timeInterval: 3.0, sinceDate: NSDate())
-      let timer: NSTimer = NSTimer(fireDate: threeSecondsFromNow, interval: 0.0, target: self, selector: "fakeNetworkRequest", userInfo: nil, repeats: false)
-      
-      runloop.addTimer(timer, forMode: NSDefaultRunLoopMode)
+      let fakeNetworkRequestTimer: NSTimer = NSTimer(fireDate: threeSecondsFromNow, interval: 0.0, target: self, selector: "finishFakeNetworkRequest", userInfo: nil, repeats: false)
+
+      NSRunLoop.currentRunLoop().addTimer(fakeNetworkRequestTimer, forMode: NSDefaultRunLoopMode)
     }
     
   }
 
-  func fakeNetworkRequest() {
+  func finishFakeNetworkRequest() {
     self.followButton.finishAnimating(success: true)
   }
   
@@ -109,7 +92,7 @@ class ProfileViewController: UIViewController, FollowButtonDelegate {
   // MARK: UI Updates
   // ------------------------------------------------------------
   internal func drawGradientIn(view: UIView) {
-    self.view.layoutIfNeeded() // call this just before UI updates that utilize frames
+    self.view.layoutIfNeeded()
     
     let gradientLayer: CAGradientLayer = CAGradientLayer()
     gradientLayer.frame = view.bounds
